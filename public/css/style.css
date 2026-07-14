@@ -284,23 +284,115 @@ textarea { resize: vertical; min-height: 70px; }
 .helptext { font-size: 12.5px; color: var(--color-ink-soft); margin-top: 4px; }
 
 /* Login page --------------------------------------------------------------- */
+/* Login page --------------------------------------------------------------- */
 .login-shell {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--color-primary);
-  background-image: radial-gradient(circle at 20% 20%, rgba(184,137,43,0.14), transparent 40%),
-                     radial-gradient(circle at 85% 80%, rgba(184,137,43,0.10), transparent 45%);
+  min-height: 100vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  /* BACKGROUND UTAMA: Selalu jernih, tajam, dan tidak akan ter-blur */
+  background: linear-gradient(
+      rgba(22, 35, 61, 0.15), 
+      rgba(22, 35, 61, 0.35)
+    ), url('../images/Lapas.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   padding: 20px;
 }
-.login-card {
-  width: 100%; max-width: 380px; background: var(--color-surface);
-  border-radius: 10px; padding: 34px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-}
-.login-card .eyebrow { font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-accent); font-weight: 700; }
-.login-card h1 { font-size: 21px; margin: 6px 0 22px; line-height: 1.35; }
-.login-card .btn { width: 100%; justify-content: center; margin-top: 4px; }
-.login-hint { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--color-border); font-size: 12px; color: var(--color-ink-soft); }
-.login-hint code { background: #f1efe6; padding: 1px 5px; border-radius: 4px; }
 
+.glass-wrapper {
+  width: 100%;
+  max-width: 420px;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* KONDISI AWAL KOTAK LOGIN: Bening, jernih, tembus pandang tanpa blur */
+.glass-wrapper .login-card {
+  width: 100%; 
+  background: rgba(22, 35, 61, 0.2); /* Tipis sekali agar latar belakang Lapas terlihat jelas */
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px; 
+  padding: 38px 34px; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* KETIKA USER BERINTERAKSI (Kursor masuk area kotak ATAU mengetik input):
+   Kotak berubah menjadi navy kokoh dan efek blur aktif hanya di dalam kotak tersebut */
+.glass-wrapper:hover .login-card,
+.glass-wrapper:focus-within .login-card {
+  background: rgba(22, 35, 61, 0.82); /* Menjadi gelap legam */
+  backdrop-filter: blur(12px); /* Efek kaca blur aktif di area kotak saja */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 137, 43, 0.6); /* Aksen emas menyala */
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+}
+
+/* Pengaturan Teks & Kontras di Kedua Kondisi */
+.glass-wrapper .login-card h1 { 
+  font-size: 21px; 
+  margin: 8px 0 24px; 
+  line-height: 1.35; 
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6); /* Bayangan tebal agar teks tetap terbaca saat transparan */
+}
+
+.glass-wrapper .login-card .eyebrow { 
+  font-weight: 700;
+  color: var(--color-accent);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.glass-wrapper .login-card .field label {
+  color: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Form Input di Kondisi Awal */
+.glass-wrapper .login-card input {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+/* Saat Kolom Input Diklik */
+.glass-wrapper .login-card input:focus {
+  background: #ffffff;
+  color: var(--color-primary);
+  border-color: var(--color-accent);
+}
+
+.glass-wrapper .login-card .btn { 
+  width: 100%; 
+  justify-content: center; 
+  margin-top: 8px; 
+  padding: 11px;
+}
+
+/* Hint Akun Demo */
+.glass-wrapper .login-card .login-hint { 
+  margin-top: 24px; 
+  padding-top: 18px; 
+  border-top: 1px solid rgba(255, 255, 255, 0.2); 
+  font-size: 12px; 
+  color: #f1efe6; 
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.glass-wrapper .login-card .login-hint code { 
+  background: rgba(22, 35, 61, 0.6); 
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 5px; 
+  border-radius: 4px; 
+}
+
+/* Sisa kode error shell tetap dipertahankan */
 .error-shell { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
 .error-card { max-width: 480px; text-align: center; }
 .error-card .code { font-family: var(--font-display); font-size: 56px; color: var(--color-accent); font-weight: 700; }
