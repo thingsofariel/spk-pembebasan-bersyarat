@@ -1,0 +1,43 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Kriteria Penilaian</div>
+  <h1>Kriteria &amp; Bobot TOPSIS</h1>
+  <p>Kriteria ini digunakan oleh seluruh wali pemasyarakatan saat menilai narapidana.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext">
+    Total bobot: <strong><%= totalBobot %></strong>
+    <% if (totalBobot !== 100) { %> &mdash; <span style="color:var(--color-danger);">disarankan berjumlah 100 (akan tetap dinormalisasi otomatis oleh sistem)</span><% } %>
+  </span>
+  <a href="/koordinator/kriteria/new" class="btn btn-accent">+ Tambah Kriteria</a>
+</div>
+
+<% if (kriteria.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada kriteria</h3><p>Tambahkan kriteria penilaian terlebih dahulu.</p></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Kriteria</th><th>Jenis</th><th class="num">Bobot</th><th></th></tr></thead>
+      <tbody>
+        <% kriteria.forEach(k => { %>
+          <tr>
+            <td><%= k.nama %></td>
+            <td><span class="badge badge-neutral"><%= k.jenis %></span></td>
+            <td class="num"><%= k.bobot %></td>
+            <td>
+              <a href="/koordinator/kriteria/<%= k.id %>/edit" class="btn btn-outline btn-sm">Kelola</a>
+              <form action="/koordinator/kriteria/<%= k.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Hapus kriteria ini beserta sub-kriterianya?');">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="btn btn-danger-outline btn-sm">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,40 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Dasbor</div>
+  <h1>Selamat datang, <%= currentUser.nama %></h1>
+  <p>Ringkasan wali pemasyarakatan, narapidana, dan laporan yang menunggu tindak lanjut.</p>
+</div>
+
+<div class="grid grid-3">
+  <div class="card stat-card">
+    <div class="stat-value"><%= waliCount %></div>
+    <div class="stat-label">Wali Pemasyarakatan</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= narapidanaCount %></div>
+    <div class="stat-label">Total Narapidana</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= pendingReports %></div>
+    <div class="stat-label">Laporan Menunggu Diteruskan</div>
+  </div>
+</div>
+
+<div class="section-title">Langkah Cepat</div>
+<div class="grid grid-3">
+  <a href="/koordinator/kriteria" class="card" style="text-decoration:none;">
+    <h3>Kriteria Penilaian</h3>
+    <p class="helptext">Kelola kriteria dan bobot yang digunakan seluruh wali.</p>
+  </a>
+  <a href="/koordinator/periode" class="card" style="text-decoration:none;">
+    <h3>Periode Penilaian</h3>
+    <p class="helptext">Buka periode baru dan atur aturan kelulusan.</p>
+  </a>
+  <a href="/koordinator/laporan" class="card" style="text-decoration:none;">
+    <h3>Laporan</h3>
+    <p class="helptext">Terima laporan dari wali dan teruskan ke Kepala Lapas.</p>
+  </a>
+</div>
+
+<%- include('../partials/footer') %>

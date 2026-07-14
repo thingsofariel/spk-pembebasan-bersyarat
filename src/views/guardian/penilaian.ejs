@@ -1,0 +1,80 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Penilaian Kriteria</div>
+  <h1>Penilaian Narapidana</h1>
+  <p>Pilih kondisi yang paling sesuai untuk setiap kriteria. Setiap pilihan akan otomatis dikonversi menjadi nilai skala TOPSIS.</p>
+</div>
+
+<% if (periodeList.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada periode penilaian</h3>
+    <p>Minta Koordinator Wali untuk membuat periode penilaian terlebih dahulu.</p>
+  </div>
+<% } else { %>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" action="/wali/penilaian" class="field" style="max-width:320px; margin-bottom:0;">
+    <label for="periode_id">Periode Penilaian</label>
+    <select id="periode_id" name="periode_id" onchange="this.form.submit()">
+      <% periodeList.forEach(p => { %>
+        <option value="<%= p.id %>" <%= periode && periode.id === p.id ? 'selected' : '' %>><%= p.nama_periode %> (<%= p.tahun %>)</option>
+      <% }) %>
+    </select>
+  </form>
+</div>
+
+<% if (narapidana.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada narapidana</h3>
+    <p>Tambahkan data narapidana terlebih dahulu di menu Data Narapidana.</p>
+  </div>
+<% } else { %>
+
+<form method="POST" action="/wali/penilaian">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="hidden" name="periode_id" value="<%= periode.id %>" />
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Narapidana</th>
+          <% kriteria.forEach(k => { %>
+            <th><%= k.nama %> <span class="badge badge-neutral"><%= k.jenis %></span></th>
+          <% }) %>
+        </tr>
+      </thead>
+      <tbody>
+        <% narapidana.forEach(n => { %>
+          <tr>
+            <td><strong><%= n.nama %></strong></td>
+            <% kriteria.forEach(k => { %>
+              <% const selected = existingScores[`${n.id}_${k.id}`]; %>
+              <td>
+                <select name="scores[<%= n.id %>][<%= k.id %>]">
+                  <option value="">— Pilih —</option>
+                  <% subKriteriaByKriteria[k.id].forEach(sk => { %>
+                    <option value="<%= sk.id %>" <%= selected === sk.id ? 'selected' : '' %>>
+                      <%= sk.deskripsi %> (skala <%= sk.nilai_skala %>)
+                    </option>
+                  <% }) %>
+                </select>
+              </td>
+            <% }) %>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-accent">Simpan Penilaian</button>
+    <a href="/wali/perhitungan?periode_id=<%= periode.id %>" class="btn btn-outline">Lanjut ke Perhitungan &rarr;</a>
+  </div>
+</form>
+
+<% } %>
+<% } %>
+
+<%- include('../partials/footer') %>

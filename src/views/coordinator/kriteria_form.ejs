@@ -1,0 +1,82 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Kriteria Penilaian</div>
+  <h1><%= kriteria ? 'Ubah Kriteria' : 'Tambah Kriteria' %></h1>
+</div>
+
+<div class="card">
+  <form action="<%= kriteria ? `/koordinator/kriteria/${kriteria.id}/edit` : '/koordinator/kriteria/new' %>" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <div class="form-grid">
+      <div class="field full">
+        <label for="nama">Nama Kriteria</label>
+        <input type="text" id="nama" name="nama" required value="<%= kriteria ? kriteria.nama : '' %>" />
+      </div>
+      <div class="field">
+        <label for="jenis">Jenis</label>
+        <select id="jenis" name="jenis">
+          <option value="benefit" <%= kriteria && kriteria.jenis === 'benefit' ? 'selected' : '' %>>Benefit (semakin tinggi semakin baik)</option>
+          <option value="cost" <%= kriteria && kriteria.jenis === 'cost' ? 'selected' : '' %>>Cost (semakin rendah semakin baik)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="bobot">Bobot</label>
+        <input type="number" id="bobot" name="bobot" step="any" min="0" required value="<%= kriteria ? kriteria.bobot : '' %>" />
+        <span class="helptext">Boleh berupa poin (mis. 25) atau pecahan (mis. 0.25) &mdash; sistem menormalisasi otomatis.</span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-accent">Simpan</button>
+      <a href="/koordinator/kriteria" class="btn btn-outline">Batal</a>
+    </div>
+  </form>
+</div>
+
+<% if (kriteria) { %>
+  <div class="section-title">Sub-Kriteria (Skala Penilaian)</div>
+  <p class="helptext" style="margin-bottom:14px;">Sub-kriteria adalah pilihan kondisi yang akan muncul sebagai dropdown saat wali melakukan penilaian, masing-masing dipetakan ke nilai skala numerik.</p>
+
+  <div class="table-wrap" style="margin-bottom:18px;">
+    <table>
+      <thead><tr><th>Deskripsi</th><th class="num">Nilai Skala</th><th></th></tr></thead>
+      <tbody>
+        <% if (subKriteria.length === 0) { %>
+          <tr><td colspan="3" class="helptext">Belum ada sub-kriteria.</td></tr>
+        <% } %>
+        <% subKriteria.forEach(sk => { %>
+          <tr>
+            <td><%= sk.deskripsi %></td>
+            <td class="num"><%= sk.nilai_skala %></td>
+            <td>
+              <form action="/koordinator/kriteria/<%= kriteria.id %>/sub-kriteria/<%= sk.id %>/delete" method="POST" onsubmit="return confirm('Hapus sub-kriteria ini?');">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="btn btn-danger-outline btn-sm">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:12px;">Tambah Sub-Kriteria</h3>
+    <form action="/koordinator/kriteria/<%= kriteria.id %>/sub-kriteria/new" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="form-grid">
+        <div class="field full">
+          <label for="deskripsi">Deskripsi</label>
+          <input type="text" id="deskripsi" name="deskripsi" required placeholder="mis. Nilai sangat baik saat mengikuti program pembinaan (80-100)" />
+        </div>
+        <div class="field">
+          <label for="nilai_skala">Nilai Skala</label>
+          <input type="number" id="nilai_skala" name="nilai_skala" step="any" min="0" required />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Tambah</button>
+    </form>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,44 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Dasbor</div>
+  <h1>Selamat datang, <%= currentUser.nama %></h1>
+  <p>Ringkasan keseluruhan lapas: narapidana, petugas, dan laporan yang masuk.</p>
+</div>
+
+<div class="grid grid-4">
+  <div class="card stat-card">
+    <div class="stat-value"><%= narapidanaCount %></div>
+    <div class="stat-label">Total Narapidana</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= koordinatorCount %></div>
+    <div class="stat-label">Koordinator Wali</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= waliCount %></div>
+    <div class="stat-label">Wali Pemasyarakatan</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= pendingReports %></div>
+    <div class="stat-label">Laporan Belum Ditinjau</div>
+  </div>
+</div>
+
+<div class="section-title">Langkah Cepat</div>
+<div class="grid grid-3">
+  <a href="/warden/laporan" class="card" style="text-decoration:none;">
+    <h3>Laporan Masuk</h3>
+    <p class="helptext">Tinjau laporan hasil TOPSIS yang diteruskan Koordinator Wali.</p>
+  </a>
+  <a href="/warden/narapidana" class="card" style="text-decoration:none;">
+    <h3>Monitor Narapidana</h3>
+    <p class="helptext">Lihat seluruh data narapidana di lapas ini.</p>
+  </a>
+  <a href="/warden/users" class="card" style="text-decoration:none;">
+    <h3>Manajemen Pengguna</h3>
+    <p class="helptext">Kelola akun koordinator dan wali pemasyarakatan.</p>
+  </a>
+</div>
+
+<%- include('../partials/footer') %>

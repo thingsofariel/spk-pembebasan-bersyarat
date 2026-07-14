@@ -1,0 +1,38 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Manajemen Pengguna</div>
+  <h1>Akun Pengguna</h1>
+  <p>Kelola akun Koordinator Wali dan Wali Pemasyarakatan.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext"><%= users.length %> pengguna</span>
+  <a href="/warden/users/new" class="btn btn-accent">+ Tambah Pengguna</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Koordinator</th><th></th></tr></thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.nama %></td>
+          <td><%= u.username %></td>
+          <td><span class="badge badge-neutral"><%= ROLE_LABEL[u.role] %></span></td>
+          <td><%= u.koordinator_nama || '—' %></td>
+          <td>
+            <% if (u.id !== currentUser.id) { %>
+              <form action="/warden/users/<%= u.id %>/delete" method="POST" onsubmit="return confirm('Hapus pengguna ini?');">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="btn btn-danger-outline btn-sm">Hapus</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

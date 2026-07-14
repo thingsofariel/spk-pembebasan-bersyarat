@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · SPK Pembebasan Bersyarat</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="eyebrow">SPK &middot; Metode TOPSIS</div>
+      <div class="title">Pembebasan<br/>Bersyarat</div>
+    </div>
+
+    <% if (currentUser) { %>
+    <div class="sidebar-role">
+      <span class="tier-badge">
+        <%= currentUser.role === 'kepala_lapas' ? 'AKSES LEVEL 0' : currentUser.role === 'koordinator_wali' ? 'AKSES LEVEL 1' : 'AKSES LEVEL 2' %>
+      </span>
+      <div class="user-name"><%= currentUser.nama %></div>
+      <div class="role-name"><%= ROLE_LABEL[currentUser.role] %></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <% if (currentUser.role === 'kepala_lapas') { %>
+        <a href="/warden/dashboard" class="<%= currentPath.startsWith('/warden/dashboard') ? 'active' : '' %>">Dasbor</a>
+        <a href="/warden/narapidana" class="<%= currentPath.startsWith('/warden/narapidana') ? 'active' : '' %>">Monitor Narapidana</a>
+        <a href="/warden/laporan" class="<%= currentPath.startsWith('/warden/laporan') ? 'active' : '' %>">Laporan Masuk</a>
+        <a href="/warden/users" class="<%= currentPath.startsWith('/warden/users') ? 'active' : '' %>">Manajemen Pengguna</a>
+      <% } else if (currentUser.role === 'koordinator_wali') { %>
+        <a href="/koordinator/dashboard" class="<%= currentPath.startsWith('/koordinator/dashboard') ? 'active' : '' %>">Dasbor</a>
+        <a href="/koordinator/narapidana" class="<%= currentPath.startsWith('/koordinator/narapidana') ? 'active' : '' %>">Monitor Narapidana</a>
+        <a href="/koordinator/kriteria" class="<%= currentPath.startsWith('/koordinator/kriteria') ? 'active' : '' %>">Kriteria Penilaian</a>
+        <a href="/koordinator/tindak-pidana" class="<%= currentPath.startsWith('/koordinator/tindak-pidana') ? 'active' : '' %>">Tindak Pidana</a>
+        <a href="/koordinator/periode" class="<%= currentPath.startsWith('/koordinator/periode') ? 'active' : '' %>">Periode Penilaian</a>
+        <a href="/koordinator/laporan" class="<%= currentPath.startsWith('/koordinator/laporan') ? 'active' : '' %>">Laporan</a>
+      <% } else if (currentUser.role === 'wali') { %>
+        <a href="/wali/dashboard" class="<%= currentPath.startsWith('/wali/dashboard') ? 'active' : '' %>">Dasbor</a>
+        <a href="/wali/narapidana" class="<%= currentPath.startsWith('/wali/narapidana') ? 'active' : '' %>">Data Narapidana</a>
+        <a href="/wali/penilaian" class="<%= currentPath.startsWith('/wali/penilaian') ? 'active' : '' %>">Penilaian Kriteria</a>
+        <a href="/wali/perhitungan" class="<%= currentPath.startsWith('/wali/perhitungan') ? 'active' : '' %>">Perhitungan TOPSIS</a>
+      <% } %>
+    </nav>
+
+    <div class="sidebar-footer">
+      <form action="/logout" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button type="submit" class="btn-logout">Keluar</button>
+      </form>
+    </div>
+    <% } %>
+  </aside>
+
+  <main class="main">

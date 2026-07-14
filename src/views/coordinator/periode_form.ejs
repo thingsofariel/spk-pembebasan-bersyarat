@@ -1,0 +1,50 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Periode Penilaian</div>
+  <h1><%= periode ? 'Ubah Periode' : 'Tambah Periode' %></h1>
+</div>
+
+<div class="card">
+  <form action="<%= periode ? `/koordinator/periode/${periode.id}/edit` : '/koordinator/periode/new' %>" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <div class="form-grid">
+      <div class="field">
+        <label for="nama_periode">Nama Periode</label>
+        <input type="text" id="nama_periode" name="nama_periode" required placeholder="mis. Periode 1" value="<%= periode ? periode.nama_periode : '' %>" />
+      </div>
+      <div class="field">
+        <label for="tahun">Tahun</label>
+        <input type="text" id="tahun" name="tahun" required placeholder="mis. 2025-2026" value="<%= periode ? periode.tahun : '' %>" />
+      </div>
+      <% if (periode) { %>
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="draft" <%= periode.status === 'draft' ? 'selected' : '' %>>Draft</option>
+          <option value="dihitung" <%= periode.status === 'dihitung' ? 'selected' : '' %>>Dihitung</option>
+          <option value="ditutup" <%= periode.status === 'ditutup' ? 'selected' : '' %>>Ditutup</option>
+        </select>
+      </div>
+      <% } %>
+      <div class="field">
+        <label for="eligibility_mode">Aturan Kelulusan</label>
+        <select id="eligibility_mode" name="eligibility_mode">
+          <option value="threshold" <%= periode && periode.eligibility_mode === 'threshold' ? 'selected' : '' %>>Ambang Batas Nilai (Vi &ge; nilai)</option>
+          <option value="quota" <%= periode && periode.eligibility_mode === 'quota' ? 'selected' : '' %>>Kuota Peringkat Teratas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eligibility_value">Nilai Ambang Batas / Kuota</label>
+        <input type="number" id="eligibility_value" name="eligibility_value" step="any" min="0" required value="<%= periode ? periode.eligibility_value : '0.5' %>" />
+        <span class="helptext">Untuk ambang batas gunakan nilai 0&ndash;1 (mis. 0.5). Untuk kuota gunakan jumlah bulat (mis. 5).</span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-accent">Simpan</button>
+      <a href="/koordinator/periode" class="btn btn-outline">Batal</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

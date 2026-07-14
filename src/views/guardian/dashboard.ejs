@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Dasbor</div>
+  <h1>Selamat datang, <%= currentUser.nama %></h1>
+  <p>Ringkasan narapidana binaan Anda dan status perhitungan TOPSIS terbaru.</p>
+</div>
+
+<div class="grid grid-3">
+  <div class="card stat-card">
+    <div class="stat-value"><%= narapidanaCount %></div>
+    <div class="stat-label">Narapidana Binaan</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= periodeList.length %></div>
+    <div class="stat-label">Periode Penilaian</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value"><%= lastHasil.length %></div>
+    <div class="stat-label">Hasil Perhitungan Tersimpan</div>
+  </div>
+</div>
+
+<div class="section-title">Hasil Perhitungan Terakhir</div>
+<% if (lastHasil.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada hasil perhitungan</h3>
+    <p>Mulai dengan menambahkan data narapidana, mengisi penilaian kriteria, lalu jalankan perhitungan TOPSIS.</p>
+    <a href="/wali/narapidana" class="btn btn-primary" style="margin-top:10px;">Kelola Data Narapidana</a>
+  </div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Periode</th><th class="num">Peringkat</th><th class="num">Nilai Preferensi</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <% lastHasil.forEach(h => { %>
+          <tr>
+            <td><%= h.nama_periode %></td>
+            <td class="num"><%= h.peringkat %></td>
+            <td class="num"><%= h.nilai_preferensi.toFixed(4) %></td>
+            <td><span class="badge <%= h.status === 'Lulus' ? 'badge-success' : 'badge-danger' %>"><%= h.status %></span></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,50 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Data Narapidana</div>
+  <h1>Narapidana Binaan Saya</h1>
+  <p>Kelola data narapidana yang berada di bawah bimbingan Anda.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext"><%= narapidana.length %> narapidana terdaftar</span>
+  <a href="/wali/narapidana/new" class="btn btn-accent">+ Tambah Narapidana</a>
+</div>
+
+<% if (narapidana.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada data narapidana</h3>
+    <p>Tambahkan narapidana binaan Anda untuk mulai melakukan penilaian.</p>
+  </div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th><th>Tindak Pidana</th><th>Kategori Register</th>
+          <th>Masa Tahanan</th><th>Umur</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% narapidana.forEach(n => { %>
+          <tr>
+            <td><strong><%= n.nama %></strong></td>
+            <td><%= n.tindak_pidana_jenis || '—' %></td>
+            <td><%= n.kategori_register || '—' %></td>
+            <td><%= n.masa_tahanan || '—' %></td>
+            <td class="num"><%= n.umur || '—' %></td>
+            <td>
+              <a href="/wali/narapidana/<%= n.id %>/edit" class="btn btn-outline btn-sm">Ubah</a>
+              <form action="/wali/narapidana/<%= n.id %>/delete" method="POST" style="display:inline" onsubmit="return confirm('Hapus data narapidana ini?');">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="btn btn-danger-outline btn-sm">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

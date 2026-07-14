@@ -1,0 +1,30 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Monitor</div>
+  <h1>Seluruh Data Narapidana</h1>
+  <p>Tampilan hanya-lihat seluruh narapidana di lapas, dikelompokkan berdasarkan wali pembinanya.</p>
+</div>
+
+<% if (narapidana.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada data narapidana</h3></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Nama</th><th>Wali</th><th>Tindak Pidana</th><th>Kategori</th><th>Masa Tahanan</th></tr></thead>
+      <tbody>
+        <% narapidana.forEach(n => { %>
+          <tr>
+            <td><strong><%= n.nama %></strong></td>
+            <td><%= n.wali_nama || '—' %></td>
+            <td><%= n.tindak_pidana_jenis || '—' %></td>
+            <td><%= n.kategori_register || '—' %></td>
+            <td><%= n.masa_tahanan || '—' %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,66 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Laporan</div>
+  <h1>Laporan</h1>
+  <p>Terima laporan hasil perhitungan dari wali pemasyarakatan, lalu teruskan ke Kepala Lapas.</p>
+</div>
+
+<div class="section-title">Diterima dari Wali</div>
+<% if (diterima.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada laporan masuk</h3></div>
+<% } else { %>
+  <div class="table-wrap" style="margin-bottom: 30px;">
+    <table>
+      <thead><tr><th>Judul</th><th>Dari</th><th>Periode</th><th>Status</th><th>Tanggal</th><th></th></tr></thead>
+      <tbody>
+        <% diterima.forEach(d => { %>
+          <tr>
+            <td><%= d.judul %></td>
+            <td><%= d.dari_nama %></td>
+            <td><%= d.nama_periode || '—' %></td>
+            <td><span class="badge <%= d.status === 'diterima' ? 'badge-success' : 'badge-accent' %>"><%= d.status %></span></td>
+            <td><%= d.created_at %></td>
+            <td>
+              <a href="/koordinator/laporan/<%= d.id %>/unduh" class="btn btn-outline btn-sm">Unduh</a>
+              <% if (d.status !== 'diterima') { %>
+                <form action="/koordinator/laporan/<%= d.id %>/terima" method="POST" style="display:inline">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="btn btn-outline btn-sm">Tandai Diterima</button>
+                </form>
+              <% } %>
+              <form action="/koordinator/laporan/<%= d.id %>/teruskan" method="POST" style="display:inline">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button type="submit" class="btn btn-primary btn-sm">Teruskan ke Kalapas</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<div class="section-title">Diteruskan ke Kepala Lapas</div>
+<% if (diteruskan.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada laporan yang diteruskan</h3></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Judul</th><th>Ke</th><th>Periode</th><th>Status</th><th>Tanggal</th></tr></thead>
+      <tbody>
+        <% diteruskan.forEach(d => { %>
+          <tr>
+            <td><%= d.judul %></td>
+            <td><%= d.ke_nama %></td>
+            <td><%= d.nama_periode || '—' %></td>
+            <td><span class="badge <%= d.status === 'diterima' ? 'badge-success' : 'badge-accent' %>"><%= d.status %></span></td>
+            <td><%= d.created_at %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>
