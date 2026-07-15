@@ -1,0 +1,129 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">LMS &middot; Kriteria Penilaian</div>
+  <h1><%= kriteria ? 'Ubah Kriteria' : 'Tambah Kriteria' %></h1>
+</div>
+
+<div class="card">
+  <form action="<%= kriteria ? `/koordinator/kriteria/${kriteria.id}/edit` : '/koordinator/kriteria/new' %>" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <div class="form-grid">
+      <div class="field full">
+        <label for="nama">Nama Kriteria</label>
+        <input type="text" id="nama" name="nama" required value="<%= kriteria ? kriteria.nama : '' %>" />
+      </div>
+      <div class="field">
+        <label for="jenis">Jenis</label>
+        <select id="jenis" name="jenis">
+          <option value="benefit" <%= kriteria && kriteria.jenis === 'benefit' ? 'selected' : '' %>>Benefit (semakin tinggi semakin baik)</option>
+          <option value="cost" <%= kriteria && kriteria.jenis === 'cost' ? 'selected' : '' %>>Cost (semakin rendah semakin baik)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="bobot">Bobot</label>
+        <input type="number" id="bobot" name="bobot" step="any" min="0" required value="<%= kriteria ? kriteria.bobot : '' %>" />
+        <span class="helptext">Boleh berupa poin (mis. 25) atau pecahan (mis. 0.25) &mdash; sistem menormalisasi otomatis.</span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-accent">Simpan</button>
+      <a href="/koordinator/kriteria" class="btn btn-outline">Batal</a>
+    </div>
+  </form>
+</div>
+
+<% if (kriteria) { %>
+  <div class="section-title">Sub-Kriteria (Skala Penilaian)</div>
+  <p class="helptext" style="margin-bottom:14px;">Sub-kriteria adalah pilihan kondisi yang akan muncul sebagai dropdown saat wali melakukan penilaian, masing-masing dipetakan ke nilai skala numerik.</p>
+
+  <div class="table-wrap" style="margin-bottom:18px;">
+    <table>
+      <thead><tr><th>Deskripsi</th><th class="num">Nilai Skala</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <% if (subKriteria.length === 0) { %>
+          <tr><td colspan="3" class="helptext">Belum ada sub-kriteria.</td></tr>
+        <% } %>
+        <% subKriteria.forEach(sk => { %>
+          <tr>
+            <td><%= sk.deskripsi %></td>
+            <td class="num"><%= sk.nilai_skala %></td>
+            <td>
+              <div class="aksi-group">
+                <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-sub-<%= sk.id %>"><%- include('../partials/icon-eye') %></button>
+                <button type="button" class="icon-btn edit" title="Ubah" aria-label="Ubah" data-modal-open="edit-sub-<%= sk.id %>"><%- include('../partials/icon-edit') %></button>
+                <form action="/koordinator/kriteria/<%= kriteria.id %>/sub-kriteria/<%= sk.id %>/delete" method="POST" onsubmit="return confirm('Hapus sub-kriteria ini?');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="icon-btn delete" title="Hapus" aria-label="Hapus"><%- include('../partials/icon-trash') %></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% subKriteria.forEach(sk => { %>
+    <div class="modal-overlay" id="view-sub-<%= sk.id %>">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3>Detail Sub-Kriteria</h3>
+          <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+          <dl class="detail-list">
+            <dt>Deskripsi</dt><dd><%= sk.deskripsi %></dd>
+            <dt>Nilai Skala</dt><dd><%= sk.nilai_skala %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="edit-sub-<%= sk.id %>">
+      <div class="modal-box">
+        <form action="/koordinator/kriteria/<%= kriteria.id %>/sub-kriteria/<%= sk.id %>/edit" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <div class="modal-head">
+            <h3>Ubah Sub-Kriteria</h3>
+            <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="field full">
+              <label for="deskripsi-<%= sk.id %>">Deskripsi</label>
+              <input type="text" id="deskripsi-<%= sk.id %>" name="deskripsi" required value="<%= sk.deskripsi %>" />
+            </div>
+            <div class="field">
+              <label for="nilai_skala-<%= sk.id %>">Nilai Skala</label>
+              <input type="number" id="nilai_skala-<%= sk.id %>" name="nilai_skala" step="any" min="0" required value="<%= sk.nilai_skala %>" />
+            </div>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-outline" data-modal-close>Batal</button>
+            <button type="submit" class="btn btn-accent">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+
+  <div class="card">
+    <h3 style="margin-bottom:12px;">Tambah Sub-Kriteria</h3>
+    <form action="/koordinator/kriteria/<%= kriteria.id %>/sub-kriteria/new" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="form-grid">
+        <div class="field full">
+          <label for="deskripsi">Deskripsi</label>
+          <input type="text" id="deskripsi" name="deskripsi" required placeholder="mis. Nilai sangat baik saat mengikuti program pembinaan (80-100)" />
+        </div>
+        <div class="field">
+          <label for="nilai_skala">Nilai Skala</label>
+          <input type="number" id="nilai_skala" name="nilai_skala" step="any" min="0" required />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Tambah</button>
+    </form>
+  </div>
+<% } %>
+
+<%- include('../partials/footer') %>

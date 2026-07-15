@@ -1,0 +1,154 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Perhitungan TOPSIS</div>
+  <h1>Perhitungan &amp; Peringkat Kelayakan</h1>
+  <p>Sistem menghitung peringkat kelayakan pembebasan bersyarat menggunakan metode TOPSIS dengan normalisasi vektor.</p>
+</div>
+
+<% if (typeof sent !== 'undefined' && sent) { %>
+  <div class="alert alert-success">Laporan hasil perhitungan berhasil dikirim ke Koordinator Wali.</div>
+<% } %>
+
+<% if (periodeList.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada periode penilaian</h3>
+    <p>Minta Koordinator Wali untuk membuat periode penilaian terlebih dahulu.</p>
+  </div>
+<% } else { %>
+
+<div class="card" style="margin-bottom:20px;">
+  <form method="GET" action="/wali/perhitungan" class="field" style="max-width:320px; margin-bottom:0;">
+    <label for="periode_id">Periode Penilaian</label>
+    <select id="periode_id" name="periode_id" onchange="this.form.submit()">
+      <% periodeList.forEach(p => { %>
+        <option value="<%= p.id %>" <%= periode && periode.id === p.id ? 'selected' : '' %>><%= p.nama_periode %> (<%= p.tahun %>) &mdash; <%= p.status %></option>
+      <% }) %>
+    </select>
+  </form>
+</div>
+
+<% if (incomplete.length > 0) { %>
+  <div class="alert alert-info">
+    <strong><%= incomplete.length %> narapidana</strong> belum lengkap penilaiannya untuk periode ini dan tidak diikutsertakan:
+    <%= incomplete.map(n => n.nama).join(', ') %>. Lengkapi di menu <a href="/wali/penilaian?periode_id=<%= periode.id %>">Penilaian Kriteria</a>.
+  </div>
+<% } %>
+
+<% if (!calc) { %>
+  <div class="empty-state">
+    <h3>Belum ada data yang siap dihitung</h3>
+    <p>Pastikan narapidana sudah memiliki penilaian lengkap untuk semua kriteria pada periode ini.</p>
+  </div>
+<% } else if (calc.error) { %>
+  <div class="alert alert-error"><%= calc.error %></div>
+<% } else { %>
+
+  <form method="POST" action="/wali/perhitungan" style="margin-bottom: 24px;">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="hidden" name="periode_id" value="<%= periode.id %>" />
+    <button type="submit" class="btn btn-accent">
+      <%= savedResults.length > 0 ? 'Hitung Ulang & Simpan' : 'Jalankan Perhitungan TOPSIS' %>
+    </button>
+    <span class="helptext">Aturan kelulusan periode ini: <%= periode.eligibility_mode === 'threshold' ? `Vi ≥ ${periode.eligibility_value}` : `Peringkat 1 sampai ${periode.eligibility_value}` %></span>
+  </form>
+
+  <div class="section-title">1. Matriks Keputusan (X)</div>
+  <div class="matrix-scroll table-wrap">
+    <table>
+      <thead>
+        <tr><th>Narapidana</th><% calc.criteria.forEach(c => { %><th class="num"><%= c.name %></th><% }) %></tr>
+      </thead>
+      <tbody>
+        <% alternatives.forEach((alt, i) => { %>
+          <tr><td><%= alt.name %></td><% calc.decisionMatrix[i].forEach(v => { %><td class="num"><%= v %></td><% }) %></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">2. Bobot Kriteria (dinormalisasi ke total 1.0)</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Kriteria</th><th>Jenis</th><th class="num">Bobot</th></tr></thead>
+      <tbody>
+        <% calc.criteria.forEach(c => { %>
+          <tr><td><%= c.name %></td><td><span class="badge badge-neutral"><%= c.type %></span></td><td class="num"><%= c.weight.toFixed(3) %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">3. Matriks Ternormalisasi (R) &mdash; Normalisasi Vektor</div>
+  <div class="matrix-scroll table-wrap">
+    <table>
+      <thead><tr><th>Narapidana</th><% calc.criteria.forEach(c => { %><th class="num"><%= c.name %></th><% }) %></tr></thead>
+      <tbody>
+        <% alternatives.forEach((alt, i) => { %>
+          <tr><td><%= alt.name %></td><% calc.normalizedMatrix[i].forEach(v => { %><td class="num"><%= v.toFixed(4) %></td><% }) %></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">4. Matriks Ternormalisasi Terbobot (Y)</div>
+  <div class="matrix-scroll table-wrap">
+    <table>
+      <thead><tr><th>Narapidana</th><% calc.criteria.forEach(c => { %><th class="num"><%= c.name %></th><% }) %></tr></thead>
+      <tbody>
+        <% alternatives.forEach((alt, i) => { %>
+          <tr><td><%= alt.name %></td><% calc.weightedMatrix[i].forEach(v => { %><td class="num"><%= v.toFixed(4) %></td><% }) %></tr>
+        <% }) %>
+        <tr style="background:#faf7ee;"><td><strong>A+ (Solusi Ideal Positif)</strong></td><% calc.idealPositive.forEach(v => { %><td class="num"><strong><%= v.toFixed(4) %></strong></td><% }) %></tr>
+        <tr style="background:#faf7ee;"><td><strong>A&minus; (Solusi Ideal Negatif)</strong></td><% calc.idealNegative.forEach(v => { %><td class="num"><strong><%= v.toFixed(4) %></strong></td><% }) %></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">5. Jarak ke Solusi Ideal &amp; Nilai Preferensi</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th class="num">D+</th><th class="num">D&minus;</th><th>Narapidana</th></tr></thead>
+      <tbody>
+        <% calc.distances.forEach(d => {
+          const alt = alternatives.find(a => a.id === d.alternativeId);
+        %>
+          <tr><td class="num"><%= d.dPositive.toFixed(4) %></td><td class="num"><%= d.dNegative.toFixed(4) %></td><td><%= alt.name %></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">6. Peringkat Akhir</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Peringkat</th><th>Nama</th><th class="num">Nilai Preferensi (Vi)</th><th>Status</th></tr></thead>
+      <tbody>
+        <% calc.results.forEach(r => { %>
+          <tr>
+            <td><span class="rank-pill <%= r.rank <= 3 ? 'top' : '' %>"><%= r.rank %></span></td>
+            <td><strong><%= r.name %></strong></td>
+            <td class="num"><%= r.score.toFixed(4) %></td>
+            <td><span class="badge <%= r.status === 'Lulus' ? 'badge-success' : 'badge-danger' %>"><%= r.status %></span></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (savedResults.length > 0) { %>
+    <div class="card" style="margin-top: 24px;">
+      <h3 style="margin-bottom:8px;">Kirim Laporan ke Koordinator Wali</h3>
+      <p class="helptext" style="margin-bottom:14px;">Hasil perhitungan di atas sudah tersimpan. Kirim sebagai laporan (CSV) kepada Koordinator Wali Anda untuk diteruskan ke Kepala Lapas.</p>
+      <form method="POST" action="/wali/laporan/kirim">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="periode_id" value="<%= periode.id %>" />
+        <button type="submit" class="btn btn-primary">Kirim Laporan</button>
+      </form>
+    </div>
+  <% } %>
+
+<% } %>
+<% } %>
+
+<%- include('../partials/footer') %>

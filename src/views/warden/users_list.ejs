@@ -1,0 +1,64 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Manajemen Pengguna</div>
+  <h1>Akun Pengguna</h1>
+  <p>Kelola akun Koordinator Wali dan Wali Pemasyarakatan.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext"><%= users.length %> pengguna</span>
+  <a href="/warden/users/new" class="btn btn-accent">+ Tambah Pengguna</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Koordinator</th><th>Aksi</th></tr></thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.nama %></td>
+          <td><%= u.username %></td>
+          <td><span class="badge badge-neutral"><%= ROLE_LABEL[u.role] %></span></td>
+          <td><%= u.koordinator_nama || '—' %></td>
+          <td>
+            <div class="aksi-group">
+              <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-user-<%= u.id %>"><%- include('../partials/icon-eye') %></button>
+              <a href="/warden/users/<%= u.id %>/edit" class="icon-btn edit" title="Ubah" aria-label="Ubah"><%- include('../partials/icon-edit') %></a>
+              <% if (u.id !== currentUser.id) { %>
+                <form action="/warden/users/<%= u.id %>/delete" method="POST" onsubmit="return confirm('Hapus pengguna ini?');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="icon-btn delete" title="Hapus" aria-label="Hapus"><%- include('../partials/icon-trash') %></button>
+                </form>
+              <% } %>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<% users.forEach(u => { %>
+  <div class="modal-overlay" id="view-user-<%= u.id %>">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3><%= u.nama %></h3>
+        <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal-body">
+        <dl class="detail-list">
+          <dt>Username</dt><dd><%= u.username %></dd>
+          <dt>Peran</dt><dd><%= ROLE_LABEL[u.role] %></dd>
+          <dt>Email</dt><dd><%= u.email || '—' %></dd>
+          <dt>Koordinator</dt><dd><%= u.koordinator_nama || '—' %></dd>
+        </dl>
+      </div>
+      <div class="modal-foot">
+        <a href="/warden/users/<%= u.id %>/edit" class="btn btn-accent btn-sm">Ubah</a>
+      </div>
+    </div>
+  </div>
+<% }) %>
+
+<%- include('../partials/footer') %>

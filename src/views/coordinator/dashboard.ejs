@@ -1,0 +1,48 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Dasbor</div>
+  <h1>Selamat datang, <%= currentUser.nama %></h1>
+  <p>Ringkasan wali pemasyarakatan, narapidana, dan laporan yang menunggu tindak lanjut.</p>
+</div>
+
+<div class="grid grid-3">
+  <div class="card stat-card">
+    <div class="stat-value" data-count="<%= waliCount %>">0</div>
+    <div class="stat-label">Wali Pemasyarakatan</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value" data-count="<%= narapidanaCount %>">0</div>
+    <div class="stat-label">Total Narapidana</div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-value" data-count="<%= pendingReports %>">0</div>
+    <div class="stat-label">Laporan Menunggu Diteruskan</div>
+  </div>
+</div>
+
+<div class="section-title">LMS &middot; Lapas Management System</div>
+<div class="grid grid-3">
+  <a href="/koordinator/kriteria" class="card" style="text-decoration:none;">
+    <h3>Kriteria Penilaian</h3>
+    <p class="helptext">Kelola kriteria dan bobot yang digunakan seluruh wali.</p>
+  </a>
+  <a href="/koordinator/periode" class="card" style="text-decoration:none;">
+    <h3>Periode Penilaian</h3>
+    <p class="helptext">Buka periode baru dan atur aturan kelulusan.</p>
+  </a>
+  <a href="/koordinator/tindak-pidana" class="card" style="text-decoration:none;">
+    <h3>Tindak Pidana</h3>
+    <p class="helptext">Kelola daftar acuan jenis tindak pidana.</p>
+  </a>
+  <a href="/koordinator/narapidana" class="card" style="text-decoration:none;">
+    <h3>Data Narapidana</h3>
+    <p class="helptext">Tambah dan kelola narapidana beserta wali pembinanya.</p>
+  </a>
+  <a href="/koordinator/laporan" class="card" style="text-decoration:none;">
+    <h3>Laporan</h3>
+    <p class="helptext">Terima laporan dari wali dan teruskan ke Kepala Lapas.</p>
+  </a>
+</div>
+
+<%- include('../partials/footer') %>

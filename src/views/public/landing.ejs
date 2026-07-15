@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · Lapas Kelas IIA Kupang</title>
+  <meta name="description" content="Profil Lembaga Pemasyarakatan Kelas IIA Kupang dan Sistem Pendukung Keputusan Pemberian Hak Pembebasan Bersyarat." />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<nav class="public-navbar">
+  <a href="#home" class="logo-card" style="text-decoration:none;">
+    <%- include('../partials/logo', { variant: 'dark' }) %>
+  </a>
+  <button type="button" class="nav-toggle" aria-label="Buka menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+  <div class="public-nav-links">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#programs">Our Programs</a>
+    <a href="#contact">Contact</a>
+    <a href="/login" class="nav-login">Login</a>
+  </div>
+</nav>
+
+<!-- ===================================================================
+     HOME
+     =================================================================== -->
+<header id="home" class="hero">
+  <div class="hero-content reveal in-view">
+    <div class="eyebrow">Lembaga Pemasyarakatan Kelas IIA &middot; Kupang, NTT</div>
+    <h1>Sistem Pendukung Keputusan<br/>Pemberian Hak Pembebasan Bersyarat</h1>
+    <p class="lead">
+      Portal resmi Lapas Kelas IIA Kupang untuk proses evaluasi kelayakan pembebasan
+      bersyarat narapidana secara objektif dan terukur, menggunakan metode TOPSIS
+      (Technique for Order of Preference by Similarity to Ideal Solution).
+    </p>
+    <div class="hero-actions">
+      <a href="#about" class="btn btn-accent">Pelajari Lebih Lanjut</a>
+      <a href="/login" class="btn btn-outline" style="background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.4); color:#fff;">Masuk ke Sistem &rarr;</a>
+    </div>
+  </div>
+  <div class="hero-scroll-cue">
+    <span>Scroll</span>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </div>
+</header>
+
+<!-- ===================================================================
+     ABOUT — text box + at least 5 photo frames
+     =================================================================== -->
+<section id="about" class="public-section alt">
+  <div class="public-section-head reveal">
+    <div class="eyebrow">Tentang Kami</div>
+    <h2>Profil Lapas Kelas IIA Kupang</h2>
+    <p>Mengenal lebih dekat tugas, fungsi, dan pendekatan pembinaan yang diterapkan.</p>
+  </div>
+
+  <div class="about-wrap reveal">
+    <div class="about-text">
+      <!-- TODO: sesuaikan narasi berikut dengan data resmi Lapas Kelas IIA Kupang -->
+      <p>
+        Lembaga Pemasyarakatan (Lapas) Kelas IIA Kupang adalah unit pelaksana teknis
+        pemasyarakatan yang berlokasi di Kupang, Nusa Tenggara Timur. Lapas ini bertanggung
+        jawab menyelenggarakan pembinaan narapidana melalui program pembinaan kepribadian
+        dan kemandirian, dengan tujuan mempersiapkan warga binaan agar dapat kembali menjadi
+        anggota masyarakat yang produktif setelah menjalani masa pidananya.
+      </p>
+      <p>
+        Untuk mendukung proses evaluasi pemberian hak pembebasan bersyarat secara lebih
+        objektif, konsisten, dan terukur, Lapas Kelas IIA Kupang menerapkan Sistem Pendukung
+        Keputusan (SPK) berbasis metode TOPSIS. Sistem ini melibatkan tiga tingkat pengguna —
+        Wali Pemasyarakatan, Koordinator Wali Pemasyarakatan, dan Kepala Lapas — dalam satu
+        alur penilaian dan pelaporan yang terstruktur dan terdokumentasi.
+      </p>
+      <div class="about-stats">
+        <div class="card stat-card hoverable">
+          <div class="stat-value">IIA</div>
+          <div class="stat-label">Klasifikasi Lapas</div>
+        </div>
+        <div class="card stat-card hoverable">
+          <div class="stat-value" data-count="3">0</div>
+          <div class="stat-label">Tingkat Akses Sistem</div>
+        </div>
+        <div class="card stat-card hoverable">
+          <div class="stat-value" style="font-size:22px;">TOPSIS</div>
+          <div class="stat-label">Metode SPK</div>
+        </div>
+        <div class="card stat-card hoverable">
+          <div class="stat-value" style="font-size:22px;">NTT</div>
+          <div class="stat-label">Nusa Tenggara Timur</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-photo-frame">
+      <img src="/images/Lapas-web.jpg" alt="Gedung Lapas Kelas IIA Kupang" />
+    </div>
+  </div>
+
+  <div class="section-title reveal" style="max-width:1080px; margin-left:auto; margin-right:auto;">Dokumentasi</div>
+  <p class="reveal" style="max-width:1080px; margin:0 auto 24px; color:var(--color-ink-soft); font-size:13.5px;">
+    Galeri berikut menyediakan bingkai untuk foto kegiatan dan fasilitas Lapas. Tambahkan berkas
+    foto pada <code>public/images/gallery/</code> (mis. <code>1.jpg</code> s.d. <code>5.jpg</code>) agar tampil otomatis di sini.
+  </p>
+  <div class="gallery-grid reveal">
+    <% const galleryFrames = [
+      { file: '/images/Lapas-web.jpg', label: 'Foto 1 · Gerbang Utama' },
+      { file: '/images/gallery/2.jpg', label: 'Foto 2 · Kegiatan Pembinaan' },
+      { file: '/images/gallery/3.jpg', label: 'Foto 3 · Ruang Kunjungan' },
+      { file: '/images/gallery/4.jpg', label: 'Foto 4 · Fasilitas Kerja' },
+      { file: '/images/gallery/5.jpg', label: 'Foto 5 · Aula Serbaguna' },
+    ]; %>
+    <% galleryFrames.forEach((g, i) => { %>
+      <div class="frame">
+        <div class="photo-frame">
+          <img src="<%= g.file %>" alt="<%= g.label %>" loading="lazy"
+               onload="this.classList.add('loaded')" onerror="this.style.display='none'" />
+          <div class="placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>
+            <span><%= g.label %></span>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<!-- ===================================================================
+     OUR PROGRAMS
+     =================================================================== -->
+<section id="programs" class="public-section">
+  <div class="public-section-head reveal">
+    <div class="eyebrow">Our Programs</div>
+    <h2>Program Pembinaan</h2>
+    <p>Rangkaian program yang dijalankan untuk membina dan mempersiapkan warga binaan.</p>
+  </div>
+  <div class="programs-grid">
+    <% const programs = [
+      { title: 'Pembinaan Kepribadian', desc: 'Penguatan sikap, kedisiplinan, dan kesadaran hukum warga binaan.',
+        icon: '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/>' },
+      { title: 'Pembinaan Kemandirian', desc: 'Pelatihan keterampilan kerja untuk bekal setelah masa pidana selesai.',
+        icon: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>' },
+      { title: 'Pendidikan &amp; Pelatihan', desc: 'Akses pendidikan formal dan nonformal bagi warga binaan.',
+        icon: '<path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>' },
+      { title: 'Bimbingan Rohani', desc: 'Pendampingan spiritual sesuai keyakinan masing-masing warga binaan.',
+        icon: '<path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9Z"/>' },
+      { title: 'Layanan Kesehatan', desc: 'Pemeriksaan dan perawatan kesehatan dasar secara berkala.',
+        icon: '<path d="M19 14c1.5-1.5 3-3.5 3-5.5A4.5 4.5 0 0 0 17.5 4 4.5 4.5 0 0 0 12 6.5 4.5 4.5 0 0 0 6.5 4 4.5 4.5 0 0 0 2 8.5C2 14.5 12 21 12 21s3-2.05 7-6"/><path d="M9 10h3v3M10.5 8.5v5"/>' },
+      { title: 'Reintegrasi Sosial', desc: 'Persiapan kembali ke masyarakat, termasuk proses pembebasan bersyarat.',
+        icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>' },
+    ]; %>
+    <% programs.forEach((p) => { %>
+      <div class="program-card reveal">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><%- p.icon %></svg></div>
+        <h3><%= p.title %></h3>
+        <p><%= p.desc %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<!-- ===================================================================
+     CONTACT
+     =================================================================== -->
+<section id="contact" class="public-section alt">
+  <div class="public-section-head reveal">
+    <div class="eyebrow">Contact</div>
+    <h2>Hubungi Kami</h2>
+    <p>Untuk informasi lebih lanjut mengenai layanan dan kunjungan.</p>
+  </div>
+
+  <div class="contact-wrap reveal">
+    <div class="contact-info">
+      <!-- TODO: lengkapi dengan alamat, nomor telepon, dan email resmi -->
+      <div class="contact-info-item">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div><h4>Alamat</h4><p>Jl. &mdash; , Kupang, Nusa Tenggara Timur (lengkapi alamat resmi)</p></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></div>
+        <div><h4>Telepon</h4><p>(0380) &mdash; (lengkapi nomor resmi)</p></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></div>
+        <div><h4>Email</h4><p>info@lapaskupang.go.id (lengkapi alamat resmi)</p></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div><h4>Jam Layanan</h4><p>Senin &ndash; Jumat, 08.00 &ndash; 16.00 WITA</p></div>
+      </div>
+    </div>
+
+    <div class="card contact-form-card">
+      <h3 style="margin-bottom:16px;">Kirim Pesan</h3>
+      <form id="contactForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="cf_nama">Nama</label>
+            <input type="text" id="cf_nama" name="nama" required />
+          </div>
+          <div class="field">
+            <label for="cf_email">Email</label>
+            <input type="email" id="cf_email" name="email" required />
+          </div>
+          <div class="field full">
+            <label for="cf_pesan">Pesan</label>
+            <textarea id="cf_pesan" name="pesan" required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-accent">Kirim Pesan</button>
+        <p id="contactFormStatus" class="contact-form-status alert alert-success" style="margin-top:14px;"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="public-footer">
+  <%- include('../partials/logo', { variant: 'dark' }) %>
+  <p style="max-width:52ch; color:#b7c2d6;">
+    Sistem Pendukung Keputusan Pemberian Hak Pembebasan Bersyarat menggunakan metode TOPSIS
+    &mdash; Lapas Kelas IIA Kupang.
+  </p>
+  <div class="public-footer-bottom">
+    <span>&copy; <%= new Date().getFullYear() %> Lapas Kelas IIA Kupang</span>
+    <span><a href="/login" style="color:var(--color-accent);">Masuk ke Sistem &rarr;</a></span>
+  </div>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

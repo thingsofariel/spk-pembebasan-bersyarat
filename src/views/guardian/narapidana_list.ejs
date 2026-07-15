@@ -1,0 +1,72 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">Data Narapidana</div>
+  <h1>Narapidana Binaan Saya</h1>
+  <p>Data narapidana Anda kini dikelola oleh Koordinator Wali. Hubungi koordinator Anda untuk penambahan atau perubahan data.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext"><%= narapidana.length %> narapidana terdaftar</span>
+</div>
+
+<% if (narapidana.length === 0) { %>
+  <div class="empty-state">
+    <h3>Belum ada data narapidana</h3>
+    <p>Minta Koordinator Wali Anda untuk menambahkan narapidana binaan Anda.</p>
+  </div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th><th>Tindak Pidana</th><th>Kategori Register</th>
+          <th>Masa Tahanan</th><th class="num">Umur</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% narapidana.forEach(n => { %>
+          <tr>
+            <td><strong><%= n.nama %></strong></td>
+            <td><%= n.tindak_pidana_jenis || '—' %></td>
+            <td><%= n.kategori_register || '—' %></td>
+            <td><%= n.masa_tahanan || '—' %></td>
+            <td class="num"><%= n.umur || '—' %></td>
+            <td>
+              <div class="aksi-group">
+                <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-narapidana-<%= n.id %>"><%- include('../partials/icon-eye') %></button>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% narapidana.forEach(n => { %>
+    <div class="modal-overlay" id="view-narapidana-<%= n.id %>">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3><%= n.nama %></h3>
+          <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+          <dl class="detail-list">
+            <dt>Agama</dt><dd><%= n.agama || '—' %></dd>
+            <dt>Tempat, Tgl Lahir</dt><dd><%= n.tempat_lahir || '—' %>, <%= n.tanggal_lahir || '—' %></dd>
+            <dt>Umur</dt><dd><%= n.umur || '—' %></dd>
+            <dt>Alamat</dt><dd><%= n.alamat || '—' %></dd>
+            <dt>Pendidikan Terakhir</dt><dd><%= n.pendidikan_terakhir || '—' %></dd>
+            <dt>Nomor KTP</dt><dd><%= n.nomor_ktp || '—' %></dd>
+            <dt>Kategori Register</dt><dd><%= n.kategori_register || '—' %></dd>
+            <dt>Tindak Pidana</dt><dd><%= n.tindak_pidana_jenis || '—' %> <% if (n.pasal_kuhp) { %>(<%= n.pasal_kuhp %>)<% } %></dd>
+            <dt>Pekerjaan Semula</dt><dd><%= n.pekerjaan_semula || '—' %></dd>
+            <dt>Masa Tahanan</dt><dd><%= n.masa_tahanan || '—' %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>

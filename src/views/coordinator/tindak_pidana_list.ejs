@@ -1,0 +1,97 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">LMS &middot; Data Induk</div>
+  <h1>Jenis Tindak Pidana</h1>
+  <p>Daftar acuan tindak pidana yang dapat dipilih saat mendata narapidana.</p>
+</div>
+
+<div class="grid" style="grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Jenis Tindak Pidana</th><th>Pasal / UU</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <% if (tindakPidana.length === 0) { %>
+          <tr><td colspan="3" class="helptext">Belum ada data.</td></tr>
+        <% } %>
+        <% tindakPidana.forEach(tp => { %>
+          <tr>
+            <td><%= tp.jenis %></td>
+            <td><%= tp.pasal_kuhp || '—' %></td>
+            <td>
+              <div class="aksi-group">
+                <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-tp-<%= tp.id %>"><%- include('../partials/icon-eye') %></button>
+                <button type="button" class="icon-btn edit" title="Ubah" aria-label="Ubah" data-modal-open="edit-tp-<%= tp.id %>"><%- include('../partials/icon-edit') %></button>
+                <form action="/koordinator/tindak-pidana/<%= tp.id %>/delete" method="POST" onsubmit="return confirm('Hapus data ini?');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="icon-btn delete" title="Hapus" aria-label="Hapus"><%- include('../partials/icon-trash') %></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:12px;">Tambah Tindak Pidana</h3>
+    <form action="/koordinator/tindak-pidana/new" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div class="field">
+        <label for="jenis">Jenis Tindak Pidana</label>
+        <input type="text" id="jenis" name="jenis" required />
+      </div>
+      <div class="field">
+        <label for="pasal_kuhp">Pasal / UU</label>
+        <input type="text" id="pasal_kuhp" name="pasal_kuhp" />
+      </div>
+      <button type="submit" class="btn btn-primary">Tambah</button>
+    </form>
+  </div>
+</div>
+
+<% tindakPidana.forEach(tp => { %>
+  <div class="modal-overlay" id="view-tp-<%= tp.id %>">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3><%= tp.jenis %></h3>
+        <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+      </div>
+      <div class="modal-body">
+        <dl class="detail-list">
+          <dt>Jenis</dt><dd><%= tp.jenis %></dd>
+          <dt>Pasal / UU</dt><dd><%= tp.pasal_kuhp || '—' %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="edit-tp-<%= tp.id %>">
+    <div class="modal-box">
+      <form action="/koordinator/tindak-pidana/<%= tp.id %>/edit" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="modal-head">
+          <h3>Ubah Tindak Pidana</h3>
+          <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="field full">
+            <label for="jenis-<%= tp.id %>">Jenis Tindak Pidana</label>
+            <input type="text" id="jenis-<%= tp.id %>" name="jenis" required value="<%= tp.jenis %>" />
+          </div>
+          <div class="field full">
+            <label for="pasal_kuhp-<%= tp.id %>">Pasal / UU</label>
+            <input type="text" id="pasal_kuhp-<%= tp.id %>" name="pasal_kuhp" value="<%= tp.pasal_kuhp || '' %>" />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-outline" data-modal-close>Batal</button>
+          <button type="submit" class="btn btn-accent">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<% }) %>
+
+<%- include('../partials/footer') %>

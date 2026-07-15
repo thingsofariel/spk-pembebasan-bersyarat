@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · SPK Pembebasan Bersyarat</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <%- include('./logo', { variant: 'dark' }) %>
+      <div class="eyebrow" style="margin-top:14px;">SPK &middot; Metode TOPSIS</div>
+      <div class="title">Pembebasan<br/>Bersyarat</div>
+    </div>
+
+    <% if (currentUser) { %>
+    <div class="sidebar-role">
+      <span class="tier-badge">
+        <%= currentUser.role === 'kepala_lapas' ? 'AKSES LEVEL 0' : currentUser.role === 'koordinator_wali' ? 'AKSES LEVEL 1' : 'AKSES LEVEL 2' %>
+      </span>
+      <div class="user-name"><%= currentUser.nama %></div>
+      <div class="role-name"><%= ROLE_LABEL[currentUser.role] %></div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <% if (currentUser.role === 'kepala_lapas') { %>
+        <a href="/warden/dashboard" class="<%= currentPath.startsWith('/warden/dashboard') ? 'active' : '' %>">Dasbor</a>
+        <a href="/warden/narapidana" class="<%= currentPath.startsWith('/warden/narapidana') ? 'active' : '' %>">Monitor Narapidana</a>
+        <a href="/warden/laporan" class="<%= currentPath.startsWith('/warden/laporan') ? 'active' : '' %>">Laporan Masuk</a>
+        <a href="/warden/users" class="<%= currentPath.startsWith('/warden/users') ? 'active' : '' %>">Manajemen Pengguna</a>
+        <a href="/warden/profil" class="<%= currentPath.startsWith('/warden/profil') ? 'active' : '' %>">Profil Saya</a>
+      <% } else if (currentUser.role === 'koordinator_wali') { %>
+        <% const lmsPaths = ['/koordinator/kriteria', '/koordinator/tindak-pidana', '/koordinator/periode', '/koordinator/narapidana'];
+           const lmsActive = lmsPaths.some((p) => currentPath.startsWith(p)); %>
+        <a href="/koordinator/dashboard" class="<%= currentPath.startsWith('/koordinator/dashboard') ? 'active' : '' %>">Dasbor</a>
+
+        <div class="nav-group <%= lmsActive ? 'open' : '' %>">
+          <button type="button" class="nav-group-toggle" data-lms-toggle>
+            <span>LMS &middot; Lapas Management System</span>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="nav-group-items">
+            <a href="/koordinator/kriteria" class="<%= currentPath.startsWith('/koordinator/kriteria') ? 'active' : '' %>">Kriteria</a>
+            <a href="/koordinator/periode" class="<%= currentPath.startsWith('/koordinator/periode') ? 'active' : '' %>">Periode</a>
+            <a href="/koordinator/tindak-pidana" class="<%= currentPath.startsWith('/koordinator/tindak-pidana') ? 'active' : '' %>">Tindak Pidana</a>
+            <a href="/koordinator/narapidana" class="<%= currentPath.startsWith('/koordinator/narapidana') ? 'active' : '' %>">Data Narapidana</a>
+          </div>
+        </div>
+
+        <a href="/koordinator/laporan" class="<%= currentPath.startsWith('/koordinator/laporan') ? 'active' : '' %>">Laporan</a>
+        <a href="/koordinator/profil" class="<%= currentPath.startsWith('/koordinator/profil') ? 'active' : '' %>">Profil Saya</a>
+      <% } else if (currentUser.role === 'wali') { %>
+        <a href="/wali/dashboard" class="<%= currentPath.startsWith('/wali/dashboard') ? 'active' : '' %>">Dasbor</a>
+        <a href="/wali/narapidana" class="<%= currentPath.startsWith('/wali/narapidana') ? 'active' : '' %>">Data Narapidana</a>
+        <a href="/wali/penilaian" class="<%= currentPath.startsWith('/wali/penilaian') ? 'active' : '' %>">Penilaian Kriteria</a>
+        <a href="/wali/perhitungan" class="<%= currentPath.startsWith('/wali/perhitungan') ? 'active' : '' %>">Perhitungan TOPSIS</a>
+        <a href="/wali/profil" class="<%= currentPath.startsWith('/wali/profil') ? 'active' : '' %>">Profil Saya</a>
+      <% } %>
+    </nav>
+
+    <div class="sidebar-footer">
+      <form action="/logout" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button type="submit" class="btn-logout">Keluar</button>
+      </form>
+    </div>
+    <% } %>
+  </aside>
+
+  <main class="main">
+    <%
+      // Breadcrumb topbar -- e.g. "Halaman Koordinator Wali / Periode Penilaian / Tambah Periode"
+      const roleLabelsBc = { warden: 'Halaman Kepala Lapas', koordinator: 'Halaman Koordinator Wali', wali: 'Halaman Wali Pemasyarakatan' };
+      const sectionLabelsBc = {
+        warden: { dashboard: 'Dasbor', narapidana: 'Monitor Narapidana', laporan: 'Laporan Masuk', users: 'Manajemen Pengguna', profil: 'Profil Saya' },
+        koordinator: { dashboard: 'Dasbor', narapidana: 'Data Narapidana', kriteria: 'Kriteria Penilaian', 'tindak-pidana': 'Tindak Pidana', periode: 'Periode Penilaian', laporan: 'Laporan', profil: 'Profil Saya' },
+        wali: { dashboard: 'Dasbor', narapidana: 'Data Narapidana', penilaian: 'Penilaian Kriteria', perhitungan: 'Perhitungan TOPSIS', profil: 'Profil Saya' },
+      };
+      let bcParts = [];
+      if (typeof currentUser !== 'undefined' && currentUser) {
+        const segs = currentPath.split('/').filter(Boolean);
+        const rolePrefix = segs[0];
+        if (roleLabelsBc[rolePrefix]) {
+          bcParts.push(roleLabelsBc[rolePrefix]);
+          const section = segs[1];
+          const sectionLabel = (sectionLabelsBc[rolePrefix] || {})[section];
+          if (sectionLabel) bcParts.push(sectionLabel);
+          if (segs[2] === 'new') bcParts.push('Tambah ' + (sectionLabel || ''));
+          else if (segs[3] === 'edit') bcParts.push('Ubah ' + (sectionLabel || ''));
+        }
+      }
+    %>
+    <% if (bcParts.length) { %>
+      <div class="topbar-breadcrumb">
+        <% bcParts.forEach((part, i) => { %>
+          <span class="crumb"><%= part %></span><% if (i < bcParts.length - 1) { %><span class="crumb-sep">/</span><% } %>
+        <% }) %>
+      </div>
+    <% } %>

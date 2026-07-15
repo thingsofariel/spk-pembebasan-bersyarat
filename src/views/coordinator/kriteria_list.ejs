@@ -1,0 +1,66 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">LMS &middot; Kriteria Penilaian</div>
+  <h1>Kriteria &amp; Bobot TOPSIS</h1>
+  <p>Kriteria ini digunakan oleh seluruh wali pemasyarakatan saat menilai narapidana.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext">
+    Total bobot: <strong><%= totalBobot %></strong>
+    <% if (totalBobot !== 100) { %> &mdash; <span style="color:var(--color-danger);">disarankan berjumlah 100 (akan tetap dinormalisasi otomatis oleh sistem)</span><% } %>
+  </span>
+  <a href="/koordinator/kriteria/new" class="btn btn-accent">+ Tambah Kriteria</a>
+</div>
+
+<% if (kriteria.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada kriteria</h3><p>Tambahkan kriteria penilaian terlebih dahulu.</p></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Kriteria</th><th>Jenis</th><th class="num">Bobot</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <% kriteria.forEach(k => { %>
+          <tr>
+            <td><%= k.nama %></td>
+            <td><span class="badge badge-neutral"><%= k.jenis %></span></td>
+            <td class="num"><%= k.bobot %></td>
+            <td>
+              <div class="aksi-group">
+                <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-kriteria-<%= k.id %>"><%- include('../partials/icon-eye') %></button>
+                <a href="/koordinator/kriteria/<%= k.id %>/edit" class="icon-btn edit" title="Ubah / Kelola Sub-Kriteria" aria-label="Ubah"><%- include('../partials/icon-edit') %></a>
+                <form action="/koordinator/kriteria/<%= k.id %>/delete" method="POST" onsubmit="return confirm('Hapus kriteria ini beserta sub-kriterianya?');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="icon-btn delete" title="Hapus" aria-label="Hapus"><%- include('../partials/icon-trash') %></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% kriteria.forEach(k => { %>
+    <div class="modal-overlay" id="view-kriteria-<%= k.id %>">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3><%= k.nama %></h3>
+          <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+          <dl class="detail-list">
+            <dt>Jenis</dt><dd><%= k.jenis === 'benefit' ? 'Benefit (semakin tinggi semakin baik)' : 'Cost (semakin rendah semakin baik)' %></dd>
+            <dt>Bobot</dt><dd><%= k.bobot %></dd>
+          </dl>
+        </div>
+        <div class="modal-foot">
+          <a href="/koordinator/kriteria/<%= k.id %>/edit" class="btn btn-accent btn-sm">Kelola Sub-Kriteria</a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>

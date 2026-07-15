@@ -1,0 +1,66 @@
+<%- include('../partials/header', { title }) %>
+
+<div class="page-header">
+  <div class="eyebrow">LMS &middot; Periode Penilaian</div>
+  <h1>Periode Penilaian</h1>
+  <p>Setiap periode memiliki aturan kelulusan sendiri yang diterapkan pada hasil TOPSIS setiap wali.</p>
+</div>
+
+<div class="toolbar">
+  <span class="helptext"><%= periode.length %> periode</span>
+  <a href="/koordinator/periode/new" class="btn btn-accent">+ Tambah Periode</a>
+</div>
+
+<% if (periode.length === 0) { %>
+  <div class="empty-state"><h3>Belum ada periode</h3><p>Buat periode pertama untuk mulai proses penilaian.</p></div>
+<% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Periode</th><th>Tahun</th><th>Status</th><th>Aturan Kelulusan</th><th>Aksi</th></tr></thead>
+      <tbody>
+        <% periode.forEach(p => { %>
+          <tr>
+            <td><strong><%= p.nama_periode %></strong></td>
+            <td><%= p.tahun %></td>
+            <td><span class="badge badge-neutral"><%= p.status %></span></td>
+            <td><%= p.eligibility_mode === 'threshold' ? `Vi ≥ ${p.eligibility_value}` : `Peringkat 1–${p.eligibility_value}` %></td>
+            <td>
+              <div class="aksi-group">
+                <button type="button" class="icon-btn view" title="Lihat" aria-label="Lihat" data-modal-open="view-periode-<%= p.id %>"><%- include('../partials/icon-eye') %></button>
+                <a href="/koordinator/periode/<%= p.id %>/edit" class="icon-btn edit" title="Ubah" aria-label="Ubah"><%- include('../partials/icon-edit') %></a>
+                <form action="/koordinator/periode/<%= p.id %>/delete" method="POST" onsubmit="return confirm('Hapus periode ini? Seluruh penilaian dan hasil TOPSIS pada periode ini akan ikut terhapus.');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="icon-btn delete" title="Hapus" aria-label="Hapus"><%- include('../partials/icon-trash') %></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% periode.forEach(p => { %>
+    <div class="modal-overlay" id="view-periode-<%= p.id %>">
+      <div class="modal-box">
+        <div class="modal-head">
+          <h3><%= p.nama_periode %></h3>
+          <button type="button" class="modal-close" data-modal-close aria-label="Tutup">&times;</button>
+        </div>
+        <div class="modal-body">
+          <dl class="detail-list">
+            <dt>Tahun</dt><dd><%= p.tahun %></dd>
+            <dt>Status</dt><dd><%= p.status %></dd>
+            <dt>Mode Kelulusan</dt><dd><%= p.eligibility_mode === 'threshold' ? 'Ambang Batas (Threshold)' : 'Kuota Peringkat' %></dd>
+            <dt>Aturan</dt><dd><%= p.eligibility_mode === 'threshold' ? `Vi ≥ ${p.eligibility_value}` : `Peringkat 1–${p.eligibility_value}` %></dd>
+          </dl>
+        </div>
+        <div class="modal-foot">
+          <a href="/koordinator/periode/<%= p.id %>/edit" class="btn btn-accent btn-sm">Ubah</a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+<% } %>
+
+<%- include('../partials/footer') %>
