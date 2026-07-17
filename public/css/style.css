@@ -645,7 +645,7 @@ a.card:hover, .card.hoverable:hover {
 }
 @media (max-width: 860px) { .about-wrap { grid-template-columns: 1fr; } }
 .about-text p { color: var(--color-ink-soft); line-height: 1.75; margin-bottom: 16px; }
-.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px;}
 .about-photo-frame {
   border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-card);
   border: 1px solid var(--color-border);

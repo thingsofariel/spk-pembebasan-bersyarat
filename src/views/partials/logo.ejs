@@ -1,18 +1,19 @@
 <%
-  /* variant: 'dark' = for dark backgrounds (sidebar, login card), 'light' = for light backgrounds (public navbar) */
+  /* variant: 'dark' = for dark backgrounds (sidebar, login card), 'light' = for light backgrounds */
   const logoVariant = typeof variant !== 'undefined' ? variant : 'dark';
 %>
 <div class="logo-card <%= logoVariant === 'light' ? 'on-light' : '' %>">
-  <div class="logo-badge logo-badge-<%= logoVariant %>">
-    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M24 2 L44 9 V22 C44 34 36 43 24 46 C12 43 4 34 4 22 V9 Z" fill="none" stroke="currentColor" stroke-width="2.6"/>
-      <path d="M24 2 L44 9 V22 C44 34 36 43 24 46 C12 43 4 34 4 22 V9 Z" fill="currentColor" opacity="0.08"/>
-      <circle cx="24" cy="19" r="6.5" fill="none" stroke="var(--color-accent)" stroke-width="2.4"/>
-      <path d="M24 25.3 V36 M24 29.5 H29.5 M24 33.2 H27.5" stroke="var(--color-accent)" stroke-width="2.4" stroke-linecap="round"/>
-    </svg>
-    <div class="logo-badge-text">
-      <span class="lb-eyebrow">Lapas Kelas IIA</span>
-      <span class="lb-title">Kupang</span>
+    <div class="logo-badge logo-badge-<%= logoVariant %>" style="display: flex; align-items: center; gap: 12px;">
+        
+        <div class="logo-images" style="display: flex; gap: 8px; align-items: center;">
+            <img src="/images/KemenImipas-removebg-preview.png" alt="KemenImipas Logo" style="height: 60px; width: auto;">
+            <img src="/images/Pemasyarakatan-removebg-preview.png" alt="Pemasyarakatan Logo" style="height: 60px; width: auto;">
+        </div>
+
+        <div class="logo-badge-text">
+            <span class="lb-eyebrow">Lapas Kelas IIA</span>
+            <span class="lb-title">Kupang</span>
+        </div>
+        
     </div>
-  </div>
 </div>
