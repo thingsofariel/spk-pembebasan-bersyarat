@@ -60,6 +60,24 @@
   });
 
   /* ------------------------------------------------------------------
+   * Table search — any input with [data-table-search="tableId"] filters
+   * that table's tbody rows client-side as the user types. Used on the
+   * Kepala Lapas monitor/user tables and the Koordinator Wali LMS tables.
+   * ------------------------------------------------------------------ */
+  document.querySelectorAll('[data-table-search]').forEach((input) => {
+    const table = document.getElementById(input.getAttribute('data-table-search'));
+    if (!table) return;
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    input.addEventListener('input', function () {
+      const q = input.value.trim().toLowerCase();
+      rows.forEach((row) => {
+        const match = !q || row.textContent.toLowerCase().includes(q);
+        row.style.display = match ? '' : 'none';
+      });
+    });
+  });
+
+  /* ------------------------------------------------------------------
    * Animated stat counters — any element with [data-count="123"]
    * ------------------------------------------------------------------ */
   function animateCount(el) {

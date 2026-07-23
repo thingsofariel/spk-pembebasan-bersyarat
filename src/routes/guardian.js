@@ -5,6 +5,7 @@ const { requireAuth, requireRole } = require('../middleware/auth');
 const { calculateTopsis, applyEligibility } = require('../services/topsis');
 const { writeHasilReportCsv } = require('../utils/report');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const { handleProfilePhotoUpload, deleteOldPhoto } = require('../middleware/upload');
 
 router.use(requireAuth, requireRole('wali'));
 
@@ -296,7 +297,23 @@ router.post('/laporan/kirim', (req, res) => {
 // ---------------------------------------------------------------------
 router.get('/profil', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.user.id);
-  res.render('guardian/profil', { title: 'Profil Saya', profileUser: user, success: req.query.success, error: null });
+  res.render('guardian/profil', {
+    title: 'Profil Saya', profileUser: user, success: req.query.success, error: null,
+    photoError: req.query.photoError || null,
+  });
+});
+
+router.post('/profil/photo', handleProfilePhotoUpload('/wali/profil'), (req, res) => {
+  const waliId = req.session.user.id;
+  if (!req.file) return res.redirect('/wali/profil');
+
+  const existing = db.prepare('SELECT foto_profil FROM users WHERE id = ?').get(waliId);
+  db.prepare("UPDATE users SET foto_profil = ?, updated_at = datetime('now') WHERE id = ?").run(
+    req.file.filename, waliId
+  );
+  deleteOldPhoto(existing.foto_profil);
+  req.session.user.foto_profil = req.file.filename;
+  res.redirect('/wali/profil?success=1');
 });
 
 router.post('/profil', (req, res) => {

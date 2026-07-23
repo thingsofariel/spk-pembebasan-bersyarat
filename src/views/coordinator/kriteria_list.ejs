@@ -11,18 +11,25 @@
     Total bobot: <strong><%= totalBobot %></strong>
     <% if (totalBobot !== 100) { %> &mdash; <span style="color:var(--color-danger);">disarankan berjumlah 100 (akan tetap dinormalisasi otomatis oleh sistem)</span><% } %>
   </span>
-  <a href="/koordinator/kriteria/new" class="btn btn-accent">+ Tambah Kriteria</a>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari kriteria..." data-table-search="kriteria-table" />
+    </div>
+    <a href="/koordinator/kriteria/new" class="btn btn-accent">+ Tambah Kriteria</a>
+  </div>
 </div>
 
 <% if (kriteria.length === 0) { %>
   <div class="empty-state"><h3>Belum ada kriteria</h3><p>Tambahkan kriteria penilaian terlebih dahulu.</p></div>
 <% } else { %>
   <div class="table-wrap">
-    <table>
-      <thead><tr><th>Kriteria</th><th>Jenis</th><th class="num">Bobot</th><th>Aksi</th></tr></thead>
+    <table id="kriteria-table">
+      <thead><tr><th class="num">No</th><th>Kriteria</th><th>Jenis</th><th class="num">Bobot</th><th>Aksi</th></tr></thead>
       <tbody>
-        <% kriteria.forEach(k => { %>
+        <% kriteria.forEach((k, i) => { %>
           <tr>
+            <td class="num"><%= i + 1 %></td>
             <td><%= k.nama %></td>
             <td><span class="badge badge-neutral"><%= k.jenis %></span></td>
             <td class="num"><%= k.bobot %></td>

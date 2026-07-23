@@ -6,17 +6,32 @@
   <p>Tampilan hanya-lihat seluruh narapidana di lapas, dikelompokkan berdasarkan wali pembinanya.</p>
 </div>
 
+<% if (narapidana.length > 0) { %>
+<div class="toolbar">
+  <span class="helptext"><%= narapidana.length %> narapidana terdaftar</span>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari narapidana..." data-table-search="warden-narapidana-table" />
+    </div>
+  </div>
+</div>
+<% } %>
+
 <% if (narapidana.length === 0) { %>
   <div class="empty-state"><h3>Belum ada data narapidana</h3></div>
 <% } else { %>
   <div class="table-wrap">
-    <table>
-      <thead><tr><th>Nama</th><th>Wali</th><th>Tindak Pidana</th><th>Kategori</th><th>Masa Tahanan</th><th>Aksi</th></tr></thead>
+    <table id="warden-narapidana-table">
+      <thead><tr><th class="num">No</th><th>Nama</th><th>Wali</th><th>Tanggal Ditambahkan</th><th>Ditambahkan Oleh</th><th>Tindak Pidana</th><th>Kategori</th><th>Masa Tahanan</th><th>Aksi</th></tr></thead>
       <tbody>
-        <% narapidana.forEach(n => { %>
+        <% narapidana.forEach((n, i) => { %>
           <tr>
+            <td class="num"><%= i + 1 %></td>
             <td><strong><%= n.nama %></strong></td>
             <td><%= n.wali_nama || '—' %></td>
+            <td><%= n.created_at ? n.created_at.slice(0, 10) : '—' %></td>
+            <td><%= n.ditambahkan_oleh_nama || '—' %></td>
             <td><%= n.tindak_pidana_jenis || '—' %></td>
             <td><%= n.kategori_register || '—' %></td>
             <td><%= n.masa_tahanan || '—' %></td>
@@ -41,6 +56,8 @@
         <div class="modal-body">
           <dl class="detail-list">
             <dt>Wali Pembina</dt><dd><%= n.wali_nama || '—' %></dd>
+            <dt>Tanggal Ditambahkan</dt><dd><%= n.created_at ? n.created_at.slice(0, 10) : '—' %></dd>
+            <dt>Ditambahkan Oleh</dt><dd><%= n.ditambahkan_oleh_nama || '—' %></dd>
             <dt>Agama</dt><dd><%= n.agama || '—' %></dd>
             <dt>Tempat, Tgl Lahir</dt><dd><%= n.tempat_lahir || '—' %>, <%= n.tanggal_lahir || '—' %></dd>
             <dt>Umur</dt><dd><%= n.umur || '—' %></dd>

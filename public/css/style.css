@@ -261,6 +261,20 @@ textarea { resize: vertical; min-height: 70px; }
 .btn-sm { padding: 5px 10px; font-size: 12.5px; }
 
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.toolbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+
+.table-search { position: relative; display: inline-flex; align-items: center; }
+.table-search svg {
+  position: absolute; left: 11px; width: 15px; height: 15px;
+  color: var(--color-ink-soft); pointer-events: none;
+}
+.table-search input {
+  padding: 8px 12px 8px 34px;
+  font-size: 13.5px;
+  min-width: 230px;
+}
+.table-search input:focus-visible { outline-offset: 0; }
+@media (max-width: 700px) { .table-search input { min-width: 0; width: 100%; } }
 
 .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 13.8px; margin-bottom: 18px; border: 1px solid transparent; }
 .alert-error { background: var(--color-danger-bg); color: var(--color-danger); border-color: #e6c6c1; }
@@ -543,8 +557,11 @@ textarea { resize: vertical; min-height: 70px; }
 }
 .profile-header .name { font-size: 20px; margin-bottom: 2px; }
 .profile-header .role { color: var(--color-ink-soft); font-size: 13px; }
+.profile-avatar-photo { object-fit: cover; }
+.photo-upload-form { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.photo-upload-form input[type="file"] { flex: 1; min-width: 220px; padding: 7px; }
 .password-field-wrap { position: relative; width: 100%; }
-.password-field-wrap input { width: 100%; box-sizing: border-box; padding-right: 36px; }
+.password-field-wrap input { width: 100%; padding-right: 38px; }
 .password-toggle {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   background: transparent; border: none; cursor: pointer; color: var(--color-ink-soft);

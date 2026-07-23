@@ -5,6 +5,7 @@
     .slice(0, 2)
     .map((w) => w[0].toUpperCase())
     .join('');
+  const photoErr = typeof photoError !== 'undefined' ? photoError : null;
 %>
 <div class="page-header">
   <div>
@@ -14,7 +15,11 @@
 </div>
 
 <div class="profile-header card">
-  <div class="profile-avatar"><%= initials %></div>
+  <% if (profileUser.foto_profil) { %>
+    <img class="profile-avatar profile-avatar-photo" src="/images/profile-photos/<%= profileUser.foto_profil %>" alt="Foto profil <%= profileUser.nama %>" />
+  <% } else { %>
+    <div class="profile-avatar"><%= initials %></div>
+  <% } %>
   <div>
     <div class="name"><%= profileUser.nama %></div>
     <div class="role"><%= ROLE_LABEL[profileUser.role] %> &middot; <span class="tier-badge" style="position:static; display:inline-block; margin-top:4px;"><%= profileUser.role === 'kepala_lapas' ? 'AKSES LEVEL 0' : profileUser.role === 'koordinator_wali' ? 'AKSES LEVEL 1' : 'AKSES LEVEL 2' %></span></div>
@@ -27,6 +32,21 @@
 <% if (error) { %>
   <div class="alert alert-error"><%= error %></div>
 <% } %>
+<% if (photoErr) { %>
+  <div class="alert alert-error"><%= photoErr %></div>
+<% } %>
+
+<div class="card">
+  <h3 style="margin-bottom:6px;">Foto Profil</h3>
+  <p style="font-size:12.5px; color:var(--color-ink-soft); margin-bottom:16px;">
+    Format JPG atau JPEG, ukuran maksimal 10 MB.
+  </p>
+  <form action="<%= actionPrefix %>/profil/photo" method="POST" enctype="multipart/form-data" class="photo-upload-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="file" id="foto" name="foto" accept=".jpg,.jpeg,image/jpeg" required />
+    <button type="submit" class="btn btn-accent">Unggah Foto</button>
+  </form>
+</div>
 
 <form action="<%= actionPrefix %>/profil" method="POST" class="card">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />

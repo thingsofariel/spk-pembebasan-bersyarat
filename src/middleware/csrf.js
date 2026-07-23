@@ -12,6 +12,13 @@ function csrfProtection(req, res, next) {
   res.locals.csrfToken = req.session.csrfToken;
 
   if (req.method === 'POST') {
+    // multipart/form-data bodies (file uploads) aren't parsed by
+    // express.urlencoded(), so req.body._csrf isn't available yet at this
+    // point in the pipeline. Those routes validate CSRF themselves, after
+    // multer has parsed the form fields — see middleware/upload.js.
+    if (req.is('multipart/form-data')) {
+      return next();
+    }
     const submitted = req.body && req.body._csrf;
     if (!submitted || submitted !== req.session.csrfToken) {
       return res.status(403).render('error', {

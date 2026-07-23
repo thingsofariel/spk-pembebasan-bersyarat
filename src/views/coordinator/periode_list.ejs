@@ -8,18 +8,25 @@
 
 <div class="toolbar">
   <span class="helptext"><%= periode.length %> periode</span>
-  <a href="/koordinator/periode/new" class="btn btn-accent">+ Tambah Periode</a>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari periode..." data-table-search="periode-table" />
+    </div>
+    <a href="/koordinator/periode/new" class="btn btn-accent">+ Tambah Periode</a>
+  </div>
 </div>
 
 <% if (periode.length === 0) { %>
   <div class="empty-state"><h3>Belum ada periode</h3><p>Buat periode pertama untuk mulai proses penilaian.</p></div>
 <% } else { %>
   <div class="table-wrap">
-    <table>
-      <thead><tr><th>Periode</th><th>Tahun</th><th>Status</th><th>Aturan Kelulusan</th><th>Aksi</th></tr></thead>
+    <table id="periode-table">
+      <thead><tr><th class="num">No</th><th>Periode</th><th>Tahun</th><th>Status</th><th>Aturan Kelulusan</th><th>Aksi</th></tr></thead>
       <tbody>
-        <% periode.forEach(p => { %>
+        <% periode.forEach((p, i) => { %>
           <tr>
+            <td class="num"><%= i + 1 %></td>
             <td><strong><%= p.nama_periode %></strong></td>
             <td><%= p.tahun %></td>
             <td><span class="badge badge-neutral"><%= p.status %></span></td>

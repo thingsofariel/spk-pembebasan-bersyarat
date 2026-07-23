@@ -5,6 +5,7 @@ const db = require('../config/db');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { UPLOADS_DIR } = require('../utils/report');
+const { handleProfilePhotoUpload, deleteOldPhoto } = require('../middleware/upload');
 
 router.use(requireAuth, requireRole('kepala_lapas'));
 
@@ -31,10 +32,12 @@ router.get('/dashboard', (req, res) => {
 router.get('/narapidana', (req, res) => {
   const narapidana = db
     .prepare(
-      `SELECT n.*, u.nama AS wali_nama, tp.jenis AS tindak_pidana_jenis, tp.pasal_kuhp
+      `SELECT n.*, u.nama AS wali_nama, tp.jenis AS tindak_pidana_jenis, tp.pasal_kuhp,
+              c.nama AS ditambahkan_oleh_nama
        FROM narapidana n
        LEFT JOIN users u ON u.id = n.wali_id
        LEFT JOIN tindak_pidana tp ON tp.id = n.tindak_pidana_id
+       LEFT JOIN users c ON c.id = n.created_by
        ORDER BY u.nama, n.nama`
     )
     .all();
@@ -177,7 +180,23 @@ router.get('/laporan/:id/unduh', (req, res) => {
 // ---------------------------------------------------------------------
 router.get('/profil', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.user.id);
-  res.render('warden/profil', { title: 'Profil Saya', profileUser: user, success: req.query.success, error: null });
+  res.render('warden/profil', {
+    title: 'Profil Saya', profileUser: user, success: req.query.success, error: null,
+    photoError: req.query.photoError || null,
+  });
+});
+
+router.post('/profil/photo', handleProfilePhotoUpload('/warden/profil'), (req, res) => {
+  const wardenId = req.session.user.id;
+  if (!req.file) return res.redirect('/warden/profil');
+
+  const existing = db.prepare('SELECT foto_profil FROM users WHERE id = ?').get(wardenId);
+  db.prepare("UPDATE users SET foto_profil = ?, updated_at = datetime('now') WHERE id = ?").run(
+    req.file.filename, wardenId
+  );
+  deleteOldPhoto(existing.foto_profil);
+  req.session.user.foto_profil = req.file.filename;
+  res.redirect('/warden/profil?success=1');
 });
 
 router.post('/profil', (req, res) => {

@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS users (
   email         TEXT,
   role          TEXT NOT NULL CHECK (role IN ('kepala_lapas','koordinator_wali','wali')),
   koordinator_id INTEGER REFERENCES users(id),
+  foto_profil   TEXT,
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS narapidana (
   pekerjaan_semula    TEXT,
   masa_tahanan        TEXT,
   wali_id             INTEGER REFERENCES users(id),
+  created_by          INTEGER REFERENCES users(id),
   created_at          TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at          TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -154,6 +156,29 @@ CREATE TABLE IF NOT EXISTS distribusi_file (
 `;
 
 db.exec(SCHEMA);
+
+/**
+ * Lightweight migration runner for columns added after a database file was
+ * first created. `CREATE TABLE IF NOT EXISTS` above only helps on a brand
+ * new install — an existing parole_dss.sqlite (like the one already on your
+ * machine) needs these columns added explicitly. Safe to run every startup:
+ * each ALTER only fires if the column isn't already there.
+ */
+function ensureColumn(table, column, definition) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+  const exists = cols.some((c) => c.name === column);
+  if (!exists) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    console.log(`Migrated: added ${table}.${column}`);
+  }
+}
+
+function runMigrations() {
+  ensureColumn('users', 'foto_profil', 'TEXT');
+  ensureColumn('narapidana', 'created_by', 'INTEGER REFERENCES users(id)');
+}
+
+runMigrations();
 
 function seedIfEmpty() {
   const { count } = db.prepare('SELECT COUNT(*) as count FROM users').get();

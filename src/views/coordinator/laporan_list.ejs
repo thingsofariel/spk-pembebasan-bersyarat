@@ -10,8 +10,17 @@
 <% if (diterima.length === 0) { %>
   <div class="empty-state"><h3>Belum ada laporan masuk</h3></div>
 <% } else { %>
+<div class="toolbar">
+  <span class="helptext"><%= diterima.length %> laporan diterima</span>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari laporan..." data-table-search="laporan-diterima-table" />
+    </div>
+  </div>
+</div>
   <div class="table-wrap" style="margin-bottom: 30px;">
-    <table>
+    <table id="laporan-diterima-table">
       <thead><tr><th>Judul</th><th>Dari</th><th>Periode</th><th>Status</th><th>Tanggal</th><th></th></tr></thead>
       <tbody>
         <% diterima.forEach(d => { %>
@@ -45,8 +54,17 @@
 <% if (diteruskan.length === 0) { %>
   <div class="empty-state"><h3>Belum ada laporan yang diteruskan</h3></div>
 <% } else { %>
+<div class="toolbar">
+  <span class="helptext"><%= diteruskan.length %> laporan diteruskan</span>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari laporan..." data-table-search="laporan-diteruskan-table" />
+    </div>
+  </div>
+</div>
   <div class="table-wrap">
-    <table>
+    <table id="laporan-diteruskan-table">
       <thead><tr><th>Judul</th><th>Ke</th><th>Periode</th><th>Status</th><th>Tanggal</th></tr></thead>
       <tbody>
         <% diteruskan.forEach(d => { %>

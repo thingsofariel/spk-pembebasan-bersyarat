@@ -8,15 +8,22 @@
 
 <div class="toolbar">
   <span class="helptext"><%= users.length %> pengguna</span>
-  <a href="/warden/users/new" class="btn btn-accent">+ Tambah Pengguna</a>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari pengguna..." data-table-search="warden-users-table" />
+    </div>
+    <a href="/warden/users/new" class="btn btn-accent">+ Tambah Pengguna</a>
+  </div>
 </div>
 
 <div class="table-wrap">
-  <table>
-    <thead><tr><th>Nama</th><th>Username</th><th>Peran</th><th>Koordinator</th><th>Aksi</th></tr></thead>
+  <table id="warden-users-table">
+    <thead><tr><th class="num">No</th><th>Nama</th><th>Username</th><th>Peran</th><th>Koordinator</th><th>Aksi</th></tr></thead>
     <tbody>
-      <% users.forEach(u => { %>
+      <% users.forEach((u, i) => { %>
         <tr>
+          <td class="num"><%= i + 1 %></td>
           <td><%= u.nama %></td>
           <td><%= u.username %></td>
           <td><span class="badge badge-neutral"><%= ROLE_LABEL[u.role] %></span></td>

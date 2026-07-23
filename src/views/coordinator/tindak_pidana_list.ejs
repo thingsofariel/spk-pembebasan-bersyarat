@@ -6,16 +6,27 @@
   <p>Daftar acuan tindak pidana yang dapat dipilih saat mendata narapidana.</p>
 </div>
 
+<div class="toolbar">
+  <span class="helptext"><%= tindakPidana.length %> tindak pidana</span>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari tindak pidana..." data-table-search="tindak-pidana-table" />
+    </div>
+  </div>
+</div>
+
 <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 24px; align-items: start;">
   <div class="table-wrap">
-    <table>
-      <thead><tr><th>Jenis Tindak Pidana</th><th>Pasal / UU</th><th>Aksi</th></tr></thead>
+    <table id="tindak-pidana-table">
+      <thead><tr><th class="num">No</th><th>Jenis Tindak Pidana</th><th>Pasal / UU</th><th>Aksi</th></tr></thead>
       <tbody>
         <% if (tindakPidana.length === 0) { %>
-          <tr><td colspan="3" class="helptext">Belum ada data.</td></tr>
+          <tr><td colspan="4" class="helptext">Belum ada data.</td></tr>
         <% } %>
-        <% tindakPidana.forEach(tp => { %>
+        <% tindakPidana.forEach((tp, i) => { %>
           <tr>
+            <td class="num"><%= i + 1 %></td>
             <td><%= tp.jenis %></td>
             <td><%= tp.pasal_kuhp || '—' %></td>
             <td>

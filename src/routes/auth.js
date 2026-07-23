@@ -43,6 +43,7 @@ router.post('/login', (req, res) => {
       username: user.username,
       role: user.role,
       koordinator_id: user.koordinator_id,
+      foto_profil: user.foto_profil,
     };
     res.redirect(ROLE_HOME[user.role] || '/login');
   });

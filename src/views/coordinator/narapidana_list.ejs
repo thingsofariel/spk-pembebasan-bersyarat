@@ -8,7 +8,13 @@
 
 <div class="toolbar">
   <span class="helptext"><%= narapidana.length %> narapidana terdaftar</span>
-  <a href="/koordinator/narapidana/new" class="btn btn-accent">+ Tambah Narapidana</a>
+  <div class="toolbar-actions">
+    <div class="table-search">
+      <%- include('../partials/icon-search') %>
+      <input type="text" placeholder="Cari narapidana..." data-table-search="koordinator-narapidana-table" />
+    </div>
+    <a href="/koordinator/narapidana/new" class="btn btn-accent">+ Tambah Narapidana</a>
+  </div>
 </div>
 
 <% if (narapidana.length === 0) { %>
@@ -18,16 +24,17 @@
   </div>
 <% } else { %>
   <div class="table-wrap">
-    <table>
+    <table id="koordinator-narapidana-table">
       <thead>
         <tr>
-          <th>Nama</th><th>Wali Pembina</th><th>Tindak Pidana</th><th>Kategori Register</th>
+          <th class="num">No</th><th>Nama</th><th>Wali Pembina</th><th>Tindak Pidana</th><th>Kategori Register</th>
           <th>Masa Tahanan</th><th class="num">Umur</th><th>Aksi</th>
         </tr>
       </thead>
       <tbody>
-        <% narapidana.forEach(n => { %>
+        <% narapidana.forEach((n, i) => { %>
           <tr>
+            <td class="num"><%= i + 1 %></td>
             <td><strong><%= n.nama %></strong></td>
             <td><%= n.wali_nama %></td>
             <td><%= n.tindak_pidana_jenis || '—' %></td>

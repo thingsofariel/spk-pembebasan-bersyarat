@@ -5,6 +5,7 @@ const db = require('../config/db');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const { UPLOADS_DIR } = require('../utils/report');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const { handleProfilePhotoUpload, deleteOldPhoto } = require('../middleware/upload');
 
 router.use(requireAuth, requireRole('koordinator_wali'));
 
@@ -96,13 +97,13 @@ router.post('/narapidana/new', (req, res) => {
   db.prepare(
     `INSERT INTO narapidana
       (nama, agama, tempat_lahir, tanggal_lahir, umur, alamat, pendidikan_terakhir,
-       nomor_ktp, kategori_register, tindak_pidana_id, pekerjaan_semula, masa_tahanan, wali_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       nomor_ktp, kategori_register, tindak_pidana_id, pekerjaan_semula, masa_tahanan, wali_id, created_by)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     nama.trim(), agama || null, tempat_lahir || null, tanggal_lahir || null,
     umur ? Number(umur) : null, alamat || null, pendidikan_terakhir || null,
     nomor_ktp || null, kategori_register || null, tindak_pidana_id ? Number(tindak_pidana_id) : null,
-    pekerjaan_semula || null, masa_tahanan || null, wali.id
+    pekerjaan_semula || null, masa_tahanan || null, wali.id, koordinatorId
   );
 
   res.redirect('/koordinator/narapidana');
@@ -373,7 +374,23 @@ router.get('/laporan/:id/unduh', (req, res) => {
 // ---------------------------------------------------------------------
 router.get('/profil', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.user.id);
-  res.render('coordinator/profil', { title: 'Profil Saya', profileUser: user, success: req.query.success, error: null });
+  res.render('coordinator/profil', {
+    title: 'Profil Saya', profileUser: user, success: req.query.success, error: null,
+    photoError: req.query.photoError || null,
+  });
+});
+
+router.post('/profil/photo', handleProfilePhotoUpload('/koordinator/profil'), (req, res) => {
+  const koordinatorId = req.session.user.id;
+  if (!req.file) return res.redirect('/koordinator/profil');
+
+  const existing = db.prepare('SELECT foto_profil FROM users WHERE id = ?').get(koordinatorId);
+  db.prepare("UPDATE users SET foto_profil = ?, updated_at = datetime('now') WHERE id = ?").run(
+    req.file.filename, koordinatorId
+  );
+  deleteOldPhoto(existing.foto_profil);
+  req.session.user.foto_profil = req.file.filename;
+  res.redirect('/koordinator/profil?success=1');
 });
 
 router.post('/profil', (req, res) => {
