@@ -543,7 +543,8 @@ textarea { resize: vertical; min-height: 70px; }
 }
 .profile-header .name { font-size: 20px; margin-bottom: 2px; }
 .profile-header .role { color: var(--color-ink-soft); font-size: 13px; }
-.password-field-wrap { position: relative; }
+.password-field-wrap { position: relative; width: 100%; }
+.password-field-wrap input { width: 100%; box-sizing: border-box; padding-right: 36px; }
 .password-toggle {
   position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
   background: transparent; border: none; cursor: pointer; color: var(--color-ink-soft);
